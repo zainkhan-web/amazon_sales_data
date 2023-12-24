@@ -1,0 +1,43 @@
+#to fetch the table
+select * from amazon_sales_data_pd;
+
+#to fetch the count of the table
+select count(*) from amazon_sales_data_pd;
+
+#to fetch the duplicate entries
+select count(*), product_id from amazon_sales_data_pd GROUP BY PRODUCT_ID HAVING COUNT(*)>1;
+
+#to add a primary key on which we can delete the duplicates
+alter table amazon_sales_data_pd add column id int auto_increment primary key;
+
+#to delete the duplicates
+delete a from amazon_sales_data_pd a join 
+amazon_sales_data_pd b on a.product_id=b.product_id
+and a.id>b.id;
+
+#to fetch the the total discounted revenue across each main_category
+select sum(discounted_price) discounted_price, main_category
+from amazon_sales_data_pd group by main_category order by discounted_price desc;
+
+#to fetch the total actual revenue across each main_category
+select sum(actual_price) actual_price, main_category
+from amazon_sales_data_pd group by main_category order by actual_price desc;
+
+#to fetch the differnece between the actual revenue and discounted revenue across main_catgeory
+select sum(discounted_price)-sum(actual_price) Difference, main_category
+from amazon_sales_data_pd group by main_category order by Difference asc;
+
+#to fetch top 3 products from each main_category with higher sales
+select product_id, product_name, discounted_price from (select product_id, product_name, discounted_price,
+dense_rank() over(partition by main_category order by discounted_price desc)rnk from amazon_sales_data_pd)a
+where rnk<=3;
+
+#to find avg revenue per customer in each category
+select main_category, round(avg(discounted_price),0) discounted_price from amazon_sales_data_pd
+group by main_category order by discounted_price desc;
+
+#to fetch the top 3 rated main_category
+select max(rating) rating, main_category from amazon_sales_data_pd
+group by main_category order by rating desc limit 3;
+
+
