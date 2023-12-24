@@ -4,7 +4,7 @@
 
 #importing the libraries, data and fetching the top 5 rows.
 import matplotlib.pyplot as plt
-import pandas as 
+import pandas as pd
 from scipy.stats import pearsonr
 df= pd.read_csv("C:/Users/admin/Downloads/amazon.csv")
 df.head()
